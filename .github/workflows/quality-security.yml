@@ -1,0 +1,47 @@
+name: Quality and Security
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  quality-security:
+    name: Quality and production security
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies reproducibly
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm check
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Build client, SSR and server
+        run: pnpm build
+
+      - name: Audit production dependencies
+        # --audit-level=high keeps existing low/moderate findings visible in logs,
+        # while failing the workflow only for high or critical findings.
+        run: pnpm audit --prod --audit-level=high
