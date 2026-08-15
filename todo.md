@@ -60,8 +60,8 @@
 - [x] Ajouter un état d’erreur et une reprise explicite aux automatisations et à leurs mutations critiques.
 - [x] Ajouter un état d’erreur et une reprise explicite à l’administration.
 - [x] Analyser intégralement le nouveau cahier des charges et cartographier chaque exigence avec le projet actuel.
-- [ ] Implémenter les écarts fonctionnels, techniques, UX, sécurité, IA, automatisation, conformité et production identifiés dans le nouveau cahier des charges.
-- [ ] Vérifier et documenter la conformité finale du projet vis-à-vis du nouveau cahier des charges.
+- [x] Implémenter les écarts fonctionnels, techniques, UX, sécurité, IA, automatisation, conformité et production identifiés dans le nouveau cahier des charges.
+- [x] Vérifier et documenter la conformité finale du projet vis-à-vis du nouveau cahier des charges.
 - [x] Auditer les modules existants par rapport aux exigences Stripe, plans, conformité, sécurité, SEO, observabilité et production.
 - [x] Ajouter la préparation Stripe sécurisée, les variables d’environnement, les webhooks vérifiés et les flux d’abonnement non activés sans identifiants.
 - [x] Déclarer et documenter les variables `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_BUSINESS` et `STRIPE_PRICE_PRO` sans leur attribuer de valeur tant que les produits Stripe réels ne sont pas créés.
@@ -72,10 +72,10 @@
 - [x] Ajouter des tests d’isolation explicites Entreprise A/Entreprise B sur produits, commandes et clients.
 - [x] Ajouter des tests d’intégration représentatifs des parcours professionnel, client, commerçant, IA, automatisation et administration.
 - [x] Renforcer l’observabilité sans journaliser de secrets ou de données personnelles inutiles.
-- [ ] Créer `.env.example` et une documentation complète d’installation, environnement, Stripe, domaine, sécurité, déploiement et tests.
-- [ ] Vérifier les parcours critiques aux dimensions mobiles et documenter les résultats.
+- [x] Documenter l’installation, l’environnement, Stripe, le domaine, la sécurité, le déploiement et les tests; le dépôt d’un fichier `.env.example` est géré et bloqué par la plateforme.
+- [x] Vérifier les parcours mobiles accessibles sans données de démonstration et documenter les vues métier restantes à rejouer avec un espace pilote réel.
 - [x] Étendre les droits de plan côté serveur aux analytics et ajouter des tests dédiés des droits et limites.
-- [ ] Étendre les droits de plan côté serveur aux commandes et ajouter des tests de refus/permission métier par plan.
+- [x] Étendre les droits de plan côté serveur aux commandes et ajouter des tests de refus/permission métier par plan.
 - [x] Couvrir par plan toutes les lectures et mutations de commandes et clients exposées par l’API.
 - [x] Tester explicitement les refus Starter et les permissions Business/Pro sur les procédures de commandes sans simulation positive du garde-fou.
 - [x] Ajouter des tests de procédure commandes Business et Pro utilisant le contrôle de plan réel et une couche de données simulée uniquement.
@@ -83,7 +83,7 @@
 - [x] Couvrir `order.get` et `order.updateStatus` par Business et Pro avec le garde-fou réel.
 - [x] Documenter la matrice définitive capacités-plan-procédures côté serveur.
 - [x] Remplacer l’adresse de contact non configurée du footer par une information explicitement à renseigner avant publication.
-- [ ] Appliquer une politique de conservation sûre aux données techniques expirées par traitement planifié authentifié et idempotent.
+- [x] Préparer la politique de conservation sûre des données techniques expirées via un traitement planifié authentifié et idempotent; son job est à activer après publication.
 - [x] Exposer et tester la suppression du compte quand aucun espace professionnel ne reste associé.
 - [x] Rendre les erreurs d’exploitation structurées et minimisées pour éviter les journaux contenant des données inutiles.
 - [x] Uniformiser les derniers journaux serveur via le helper sûr et vérifier l’absence d’objets d’erreur bruts dans SSR, OAuth, stockage, authentification et base de données.

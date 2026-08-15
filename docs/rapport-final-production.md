@@ -80,3 +80,5 @@ Le rendu à 375 × 812 est validé pour la landing, les pages légales et l’on
 ## Conclusion
 
 CommerceBoost974 est techniquement solide pour passer à une **recette pilote contrôlée** : le build est réussi, la typologie est propre, la suite de 62 tests est verte et les protections multi-tenant sont explicitement testées. Il ne peut toutefois pas être déclaré **🟢 PRODUCTION READY** tant que Stripe, l’identité de l’éditeur, le domaine canonique, le job de rétention publié et les dernières recettes avec données réelles ne sont pas finalisés.
+
+La correspondance détaillée exigence-par-exigence, les preuves et les actions humaines sont répertoriées dans [la matrice finale de conformité](./matrice-conformite-finale.md).
