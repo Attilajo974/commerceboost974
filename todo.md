@@ -95,3 +95,6 @@
 - [x] Créer le commit d’export de la version actuelle sans secret ni fichier d’environnement.
 - [x] Pousser la version actuelle complète vers `Attilajo974/commerceboost974` sur `master` et vérifier les fichiers distants.
 - [x] Revalider le commit local puis remplacer `master` par push forcé conformément à la confirmation explicite reçue.
+- [x] Auditer, renforcer et tester les protections CSRF, cookies, limites HTTP et mutations sensibles sans changer les fonctions métier.
+- [x] Vérifier explicitement la protection CSRF des mutations de facturation et l’exclusion sûre du webhook Stripe.
+- [x] Prouver les flux CSRF valides de portail de facturation et de webhook Stripe signé sans configuration de production persistée.
