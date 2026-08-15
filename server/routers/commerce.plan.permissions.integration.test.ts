@@ -6,7 +6,7 @@ vi.mock("../domain/tenant", () => ({ getRequiredDb: vi.fn(async () => mocks.db),
 import { appRouter } from "../routers";
 
 const user = { id: 41, openId: "business-permission", name: "Permission", email: "permission@example.test", loginMethod: "manus", role: "user" as const, createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() };
-const context: TrpcContext = { user, req: { headers: {} } as TrpcContext["req"], res: {} as TrpcContext["res"] };
+const context: TrpcContext = { user, req: { headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"], res: {} as TrpcContext["res"] };
 
 function preparePlanAndOrderList(planCode: "business" | "pro") {
   let call = 0;

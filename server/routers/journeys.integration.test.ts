@@ -12,7 +12,7 @@ vi.mock("../_core/heartbeat", () => ({ createHeartbeatJob: mocks.createHeartbeat
 
 import { appRouter } from "../routers";
 
-function context(role: "user" | "admin" = "user"): TrpcContext { return { user: { id: 31, openId: "journey-owner", name: "Titulaire", email: "owner@example.test", loginMethod: "manus", role, createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() }, req: { ip: "198.51.100.8", headers: { cookie: "app_session_id=session" } } as TrpcContext["req"], res: {} as TrpcContext["res"] }; }
+function context(role: "user" | "admin" = "user"): TrpcContext { return { user: { id: 31, openId: "journey-owner", name: "Titulaire", email: "owner@example.test", loginMethod: "manus", role, createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() }, req: { ip: "198.51.100.8", headers: { cookie: "app_session_id=session", "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"], res: {} as TrpcContext["res"] }; }
 const list = (rows: unknown[]) => ({ from: () => ({ where: () => ({ limit: async () => rows, orderBy: async () => rows }) }) });
 
 describe("Parcours d’intégration représentatifs", () => {

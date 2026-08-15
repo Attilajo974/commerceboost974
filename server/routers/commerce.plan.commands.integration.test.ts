@@ -7,7 +7,7 @@ vi.mock("../domain/rateLimit", () => ({ enforceActionRateLimit: vi.fn(async () =
 import { appRouter } from "../routers";
 
 const user = { id: 41, openId: "command-permission", name: "Commandes", email: "commandes@example.test", loginMethod: "manus", role: "user" as const, createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() };
-const context: TrpcContext = { user, req: { headers: {} } as TrpcContext["req"], res: {} as TrpcContext["res"] };
+const context: TrpcContext = { user, req: { headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"], res: {} as TrpcContext["res"] };
 
 function selectPlan(code: "business" | "pro") { return { from: () => ({ leftJoin: () => ({ where: () => ({ limit: async () => [{ subscription: { businessId: 9, status: "active" }, plan: { code } }] }) }) }) }; }
 

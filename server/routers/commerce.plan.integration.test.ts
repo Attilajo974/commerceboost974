@@ -7,7 +7,7 @@ vi.mock("../billing/plans", async importOriginal => ({ ...(await importOriginal<
 import { appRouter } from "../routers";
 
 const user = { id: 41, openId: "plan-test", name: "Plan", email: "plan@example.test", loginMethod: "manus", role: "user" as const, createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() };
-const context: TrpcContext = { user, req: { headers: {} } as TrpcContext["req"], res: {} as TrpcContext["res"] };
+const context: TrpcContext = { user, req: { headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"], res: {} as TrpcContext["res"] };
 
 describe("order.list — garde-fou plan", () => {
   it("refuse Starter avant toute lecture de commande", async () => {

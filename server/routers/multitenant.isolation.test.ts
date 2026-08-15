@@ -11,7 +11,7 @@ import { appRouter } from "../routers";
 const entrepriseA = 101;
 const entrepriseB = 202;
 function membershipRows(rows: unknown[]) { return { from: () => ({ where: () => ({ limit: async () => rows }) }) }; }
-function contextEntrepriseA(): TrpcContext { return { user: { id: 11, openId: "owner-a", name: "Entreprise A", email: "a@example.test", loginMethod: "manus", role: "user", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() }, req: { ip: "198.51.100.8", headers: {} } as TrpcContext["req"], res: {} as TrpcContext["res"] }; }
+function contextEntrepriseA(): TrpcContext { return { user: { id: 11, openId: "owner-a", name: "Entreprise A", email: "a@example.test", loginMethod: "manus", role: "user", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() }, req: { ip: "198.51.100.8", headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"], res: {} as TrpcContext["res"] }; }
 
 describe("Isolation multi-tenant réelle — Entreprise A contre Entreprise B", () => {
   beforeEach(() => { vi.clearAllMocks(); dbSelect.mockReturnValue(membershipRows([])); });

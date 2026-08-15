@@ -8,7 +8,7 @@ vi.mock("../domain/rateLimit", () => ({ enforceActionRateLimit: mocks.enforceAct
 
 import { appRouter } from "../routers";
 
-function context(): TrpcContext { return { user: { id: 41, openId: "user-to-delete", name: "Titulaire", email: "owner@example.test", loginMethod: "manus", role: "user", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() }, req: { ip: "198.51.100.8", headers: {} } as TrpcContext["req"], res: {} as TrpcContext["res"] }; }
+function context(): TrpcContext { return { user: { id: 41, openId: "user-to-delete", name: "Titulaire", email: "owner@example.test", loginMethod: "manus", role: "user", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() }, req: { ip: "198.51.100.8", headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"], res: {} as TrpcContext["res"] }; }
 function noMembershipRows(rows: unknown[] = []) { mocks.db.select.mockReturnValue({ from: vi.fn(() => ({ where: vi.fn(() => ({ limit: vi.fn(async () => rows) })) })) }); }
 
 describe("privacy.deleteMyAccount — intégration tRPC", () => {

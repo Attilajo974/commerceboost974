@@ -29,7 +29,7 @@ function createAuthContext(): { ctx: TrpcContext; clearedCookies: CookieCall[] }
     user,
     req: {
       protocol: "https",
-      headers: {},
+      headers: { "x-commerceboost-csrf": "same-origin" },
     } as TrpcContext["req"],
     res: {
       clearCookie: (name: string, options: Record<string, unknown>) => {
@@ -54,9 +54,16 @@ describe("auth.logout", () => {
     expect(clearedCookies[0]?.options).toMatchObject({
       maxAge: -1,
       secure: true,
-      sameSite: "none",
+      sameSite: "lax",
       httpOnly: true,
       path: "/",
     });
+  });
+
+  it("refuses a cross-site logout without the CSRF marker", async () => {
+    const { ctx, clearedCookies } = createAuthContext();
+    ctx.req.headers = {};
+    await expect(appRouter.createCaller(ctx).auth.logout()).rejects.toMatchObject({ code: "FORBIDDEN" });
+    expect(clearedCookies).toHaveLength(0);
   });
 });

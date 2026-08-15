@@ -16,7 +16,7 @@ function context(role: "user" | "admin" = "user", authenticated = true): TrpcCon
   const now = new Date();
   return {
     user: authenticated ? { id: 21, openId: "access-test", name: "Test", email: "test@example.com", loginMethod: "manus", role, createdAt: now, updatedAt: now, lastSignedIn: now } : null,
-    req: { protocol: "https", headers: {} } as TrpcContext["req"],
+    req: { protocol: "https", headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"],
     res: { clearCookie: vi.fn() } as unknown as TrpcContext["res"],
   };
 }

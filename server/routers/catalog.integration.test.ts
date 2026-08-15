@@ -21,7 +21,7 @@ import { appRouter } from "../routers";
 function context(): TrpcContext {
   return {
     user: { id: 41, openId: "owner-41", name: "Propriétaire", email: "atelier@example.test", loginMethod: "manus", role: "user", createdAt: new Date(), updatedAt: new Date(), lastSignedIn: new Date() },
-    req: { ip: "198.51.100.8", headers: {} } as TrpcContext["req"],
+    req: { ip: "198.51.100.8", headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"],
     res: {} as TrpcContext["res"],
   };
 }

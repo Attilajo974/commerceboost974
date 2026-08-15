@@ -16,6 +16,7 @@ import { stripeWebhookHandler } from "../billing/webhook";
 import { ENV } from "./env";
 import { dataRetentionHandler } from "../scheduled/dataRetention";
 import { logOperationalError } from "../domain/observability";
+import { JSON_BODY_LIMIT, URL_ENCODED_BODY_LIMIT } from "./httpSecurity";
 
 const apiRequests = new Map<string, { count: number; resetAt: number }>();
 
@@ -81,9 +82,9 @@ async function startServer() {
   app.set("trust proxy", 1);
   app.use(securityHeaders);
   app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhookHandler);
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Files are stored through presigned storage URLs; API payloads need only structured data.
+  app.use(express.json({ limit: JSON_BODY_LIMIT }));
+  app.use(express.urlencoded({ limit: URL_ENCODED_BODY_LIMIT, extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   app.post("/api/scheduled/weekly-summary", weeklySummaryHandler);
@@ -121,6 +122,11 @@ async function startServer() {
   app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     logOperationalError("http.unhandled", error, { path: _req.path, method: _req.method });
     if (!res.headersSent) {
+      const status = typeof error === "object" && error && "status" in error ? Number(error.status) : 500;
+      if (status === 413) {
+        res.status(413).json({ error: "La requête dépasse la taille autorisée." });
+        return;
+      }
       res.status(500).json({ error: "Le service a rencontré une erreur inattendue." });
     }
   });

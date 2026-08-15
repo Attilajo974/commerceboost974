@@ -33,7 +33,7 @@ function context(): TrpcContext {
       updatedAt: new Date(),
       lastSignedIn: new Date(),
     },
-    req: { ip: "198.51.100.8", headers: {} } as TrpcContext["req"],
+    req: { ip: "198.51.100.8", headers: { "x-commerceboost-csrf": "same-origin" } } as TrpcContext["req"],
     res: {} as TrpcContext["res"],
   };
 }
