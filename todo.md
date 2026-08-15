@@ -1,0 +1,57 @@
+# Project TODO
+
+- [x] Formaliser les exigences du cahier des charges et documenter les décisions de nouvelle architecture.
+- [x] Définir le modèle de données multi-tenant avec entreprises, adhésions, rôles et droits d’accès.
+- [x] Définir les tables métier pour catégories, produits, promotions, clients, commandes et lignes de commande.
+- [x] Définir les tables pour paramètres d’entreprise, abonnements, limites, usages IA, notifications et journal d’audit.
+- [x] Générer et appliquer les migrations de base de données pour le nouveau schéma.
+- [x] Implémenter des garde-fous serveur garantissant l’isolation stricte par entreprise.
+- [x] Implémenter les rôles propriétaire, gestionnaire et collaborateur ainsi que leurs permissions.
+- [x] Implémenter les procédures API typées pour les entreprises, l’onboarding et les paramètres.
+- [x] Implémenter les procédures API typées pour le catalogue, les catégories et les promotions.
+- [x] Implémenter les procédures API typées pour les clients, commandes et calculs serveur.
+- [x] Implémenter la consultation publique sécurisée des boutiques et la création de commande publique.
+- [x] Implémenter les contrôles de validation, les erreurs métier, la limitation des actions sensibles et l’audit.
+- [x] Créer le design system clair/sombre, accessible, mobile-first et cohérent.
+- [ ] Créer la landing page publique, les contenus métiers, la tarification, la FAQ et les métadonnées SEO.
+- [x] Créer l’authentification et la protection des routes en s’appuyant sur le système d’identité sécurisé du projet.
+- [x] Créer l’onboarding en huit étapes avec publication de la boutique.
+- [x] Créer le tableau de bord analytique avec données réelles, périodes et actions recommandées.
+- [x] Créer les interfaces de gestion produits et catégories avec recherche, filtres, tri et états vides.
+- [x] Créer l’interface de gestion des promotions avec règles et période de validité.
+- [x] Créer l’interface de gestion des commandes, des statuts et de l’historique.
+- [x] Créer l’interface clients avec recherche, coordonnées, historique et indicateurs réels.
+- [x] Créer la boutique publique responsive, le panier et le parcours de commande sans confiance côté navigateur.
+- [x] Intégrer des fonctions IA dans les workflows de contenu et de décision, avec traçabilité d’usage.
+- [x] Préparer les modèles et points d’extension pour l’administration, les plans et les automatisations.
+- [ ] Mettre en place le SEO technique, les pages indexables, le sitemap, robots et les données structurées pertinentes.
+- [ ] Mettre en place les états de chargement, erreurs, succès, sessions expirées et ressources introuvables.
+- [x] Écrire et exécuter les tests unitaires, API, calculs, permissions, authentification et isolation multi-tenant.
+- [x] Vérifier le typage, le build, le comportement responsive, les interactions clés et les performances de base.
+- [x] Rédiger le rapport final de fonctionnalités, tests, limites éventuelles et préparation au déploiement.
+- [x] Ajouter la table tenantée de notifications, ses relations, index et migration.
+- [x] Vérifier et documenter que le journal des migrations reflète exactement le schéma déployé.
+- [x] Comparer les empreintes des migrations locales avec le journal de la base et vérifier les tables, contraintes et index clés.
+- [x] Ajouter la lecture et la mise à jour validées des paramètres d’entreprise.
+- [x] Compléter le cycle de vie des produits et promotions avec les opérations métier manquantes.
+- [x] Généraliser l’audit des mutations sensibles et renforcer la limitation des actions critiques.
+- [x] Mettre en place une limitation durable et partagée entre instances pour les mutations critiques.
+- [x] Définir, documenter et tester les politiques de limitation et d’audit couvrant les mutations sensibles.
+- [x] Étendre la limitation partagée aux mutations sensibles restantes d’entreprise, onboarding et clients.
+- [x] Ajouter des tests de couverture des politiques de limitation et du journal d’audit pour les mutations critiques.
+- [x] Documenter une matrice complète des mutations sensibles, de leurs rôles, de leur audit et de leur protection de débit.
+- [x] Ajouter des tests tRPC de mutation critique prouvant l’invocation de la politique et l’écriture d’audit.
+- [x] Ajouter un test d’exécution prouvant le blocage après dépassement du quota partagé.
+- [x] Ajouter des tests tRPC runtime sur création de produit, changement de statut de commande et commande publique.
+- [x] Vérifier l’exécution réelle de `recordAudit` et les valeurs tenant, acteur, action et entité transmises à la couche de base.
+- [x] Ajouter un sélecteur de période relié aux analyses du tableau de bord.
+- [x] Ajouter un tri interactif au catalogue.
+- [x] Compléter les règles de promotion avec période, minimum de commande et produits ciblés.
+- [x] Afficher l’historique de statuts dans le parcours commandes.
+- [x] Créer une fiche client avec coordonnées et commandes associées.
+- [ ] Ajouter des états d’erreur cohérents sur les pages tRPC critiques.
+- [x] Ajouter des tests d’autorisation pour les rôles propriétaire, gestionnaire, collaborateur et administrateur, ainsi que les refus UNAUTHORIZED/FORBIDDEN.
+- [x] Ajouter des tests d’authentification et de protection de procédure au-delà de la déconnexion.
+- [x] Vérifier et documenter les interactions de parcours clés en navigateur ou via des tests d’intégration représentatifs.
+- [x] Documenter une mesure de performance de base et son budget de bundle.
+- [x] Vérifier la présence et le contenu du rapport final de validation.

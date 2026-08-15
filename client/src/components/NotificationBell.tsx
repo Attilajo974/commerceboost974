@@ -1,0 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { trpc } from "@/lib/trpc";
+import { Bell } from "lucide-react";
+
+export default function NotificationBell({ businessId }: { businessId: number }) { const { data = [] } = trpc.notification.list.useQuery({ businessId }); const utils = trpc.useUtils(); const markRead = trpc.notification.markRead.useMutation({ onSuccess: () => utils.notification.list.invalidate({ businessId }) }); const unread = data.filter(item => !item.isRead).length; return <Popover><PopoverTrigger asChild><button className="cb-icon-button cb-notification-button" aria-label="Notifications"><Bell size={18} />{unread > 0 && <b>{unread > 9 ? "9+" : unread}</b>}</button></PopoverTrigger><PopoverContent align="end" className="w-80 p-0"><div className="cb-notification-header">Notifications</div>{data.length ? <div className="cb-notification-list">{data.map(item => <button key={item.id} className={item.isRead ? "" : "is-unread"} onClick={() => !item.isRead && markRead.mutate({ businessId, id: item.id })}><strong>{item.title}</strong>{item.body && <span>{item.body}</span>}</button>)}</div> : <div className="cb-notification-empty">Aucune notification pour le moment.</div>}</PopoverContent></Popover>; }

@@ -1,5 +1,34 @@
 {
   "version": "7",
   "dialect": "mysql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1786762842047,
+      "tag": "0000_right_next_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1786762998770,
+      "tag": "0001_shallow_killer_shrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1786763128726,
+      "tag": "0002_workable_tyrannus",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1786763572733,
+      "tag": "0003_absurd_gwen_stacy",
+      "breakpoints": true
+    }
+  ]
 }
