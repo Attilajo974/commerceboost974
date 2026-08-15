@@ -98,3 +98,4 @@
 - [x] Auditer, renforcer et tester les protections CSRF, cookies, limites HTTP et mutations sensibles sans changer les fonctions métier.
 - [x] Vérifier explicitement la protection CSRF des mutations de facturation et l’exclusion sûre du webhook Stripe.
 - [x] Prouver les flux CSRF valides de portail de facturation et de webhook Stripe signé sans configuration de production persistée.
+- [x] Ajouter, valider et synchroniser une CI GitHub de typage, tests, build et audit de production sur master.
