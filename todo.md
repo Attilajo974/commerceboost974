@@ -91,3 +91,7 @@
 - [x] Rendre les six parcours de recette explicitement traçables avec succès et refus métier dans la suite d’intégration.
 - [x] Couvrir les refus métier explicites pour les parcours client public, IA et automatisation.
 - [x] Redacter les journaux du collecteur de débogage afin qu’ils ne conservent ni contenus de réponse, ni en-têtes sensibles, ni paramètres d’URL d’API.
+- [x] Vérifier l’intégrité du projet actuel et ses règles d’exclusion avant export GitHub.
+- [x] Créer le commit d’export de la version actuelle sans secret ni fichier d’environnement.
+- [x] Pousser la version actuelle complète vers `Attilajo974/commerceboost974` sur `master` et vérifier les fichiers distants.
+- [x] Revalider le commit local puis remplacer `master` par push forcé conformément à la confirmation explicite reçue.
