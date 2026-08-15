@@ -12,3 +12,5 @@ Les captures de contrôle ont été réalisées sur la landing publique et le pa
 La direction visuelle retenue associe un vert profond, des tons menthe fonctionnels et une typographie éditoriale pour exprimer un produit professionnel, calme et ancré à La Réunion. Les états réels de données restent prioritaires : aucune statistique, commande ou avis client fictif n’est injecté dans la base.
 
 Les dernières captures desktop confirment également que la landing conserve son premier écran sans débordement et que l’onboarding d’entreprise garde une progression et des champs de saisie lisibles après le découpage du bundle.
+
+La capture mobile finale confirme que la FAQ se place après la section tarifaire, sans dégrader l’empilement des blocs ni les appels à l’action de la landing.

@@ -19,7 +19,7 @@ Le nouveau projet a été créé depuis une base vierge. Il ne réutilise aucun 
 | IA | Assistance de rédaction produit et synthèse d’activité via un appel serveur journalisé et limité. |
 | Administration | Vue plateforme réservée au rôle administrateur, notifications et règles d’automatisation. |
 | Sécurité | Contrôles de tenant, permissions par rôle, validations serveur, journal d’audit et limitation de débit durable partagée entre instances. |
-| SEO de base | Métadonnées de la landing, données structurées, `robots.txt` et sitemap dynamique des boutiques publiées. |
+| SEO et indexation | Landing, boutiques et pages légales rendues côté serveur, métadonnées par page, canonical, Open Graph/Twitter, données structurées, `robots.txt` et sitemap dynamique. |
 
 ## Vérifications réalisées
 
@@ -38,15 +38,14 @@ Le nouveau projet a été créé depuis une base vierge. Il ne réutilise aucun 
 | Priorité | Point | Action recommandée |
 | --- | --- | --- |
 | Haute | Paiement en ligne | Aucune intégration de paiement n’est activée. La boutique enregistre actuellement des demandes de commande, sans encaissement. Connecter un prestataire de paiement ou un back-office de paiement avant toute vente nécessitant règlement en ligne. |
-| Haute | SEO de contenu | Le socle SEO, sitemap et robots sont présents, mais les pages publiques restent rendues côté client. Prévoir un rendu serveur des pages marketing et boutique pour garantir que les robots sans JavaScript lisent tout le contenu. |
-| Haute | Environnement de production | Renseigner `CANONICAL_ORIGIN` avec le domaine final, configurer les mentions légales, la politique de confidentialité, le support et les paramètres commerciaux. |
+| Haute | Environnement de production | Renseigner `CANONICAL_ORIGIN` avec le domaine final, compléter les informations d’éditeur et de support, et vérifier les paramètres commerciaux avant publication. |
 | Moyenne | Automatisations | Publier l’application puis créer la règle depuis l’espace propriétaire. Aucun cron n’est volontairement créé pendant le développement. |
 | Moyenne | UX de reprise | Les pages principales disposent d’états de chargement, vides et d’erreur. Étendre les états d’erreur explicites à tous les formulaires et paramètres secondaires avant le lancement. |
-| Moyenne | Performance | Les pages sont chargées de façon asynchrone, mais le bundle commun compressé reste à environ 204 kio gzip. Une analyse de dépendances et un découpage manuel complémentaire sont conseillés avant une campagne d’acquisition. |
+| Moyenne | Performance | Les pages privées sont chargées de façon asynchrone et le bundle commun compressé est à environ 152 kio gzip. Une analyse de dépendances complémentaire reste conseillée avant une campagne d’acquisition. |
 | Moyenne | Validation métier | Réaliser une recette avec de vraies entreprises de La Réunion, des comptes collaborateur/gestionnaire et un parcours complet de commande avant ouverture publique. |
 
 > Le verdict **PARTIELLEMENT PRÊT** reflète une base SaaS fonctionnelle et testée, mais pas encore une ouverture commerciale sans réserve : encaissement, rendu SEO complet, éléments juridiques et recette réelle doivent être finalisés.
 
 ## Documents associés
 
-Les décisions d’architecture sont décrites dans `docs/architecture.md`; la sécurité et les politiques de mutations dans `docs/security-policy.md`; les automatisations dans `docs/automation-deployment.md`; la validation visuelle dans `docs/ui-validation.md`; le budget de performance dans `docs/performance-validation.md`.
+Les décisions d’architecture sont décrites dans `docs/architecture.md`; la sécurité et les politiques de mutations dans `docs/security-policy.md`; les automatisations dans `docs/automation-deployment.md`; la validation visuelle dans `docs/ui-validation.md`; le budget de performance dans `docs/performance-validation.md`; la validation SEO/SSR dans `docs/seo-ssr-validation.md`.

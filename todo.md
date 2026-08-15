@@ -13,7 +13,7 @@
 - [x] Implémenter la consultation publique sécurisée des boutiques et la création de commande publique.
 - [x] Implémenter les contrôles de validation, les erreurs métier, la limitation des actions sensibles et l’audit.
 - [x] Créer le design system clair/sombre, accessible, mobile-first et cohérent.
-- [ ] Créer la landing page publique, les contenus métiers, la tarification, la FAQ et les métadonnées SEO.
+- [x] Créer la landing page publique, les contenus métiers, la tarification, la FAQ et les métadonnées SEO.
 - [x] Créer l’authentification et la protection des routes en s’appuyant sur le système d’identité sécurisé du projet.
 - [x] Créer l’onboarding en huit étapes avec publication de la boutique.
 - [x] Créer le tableau de bord analytique avec données réelles, périodes et actions recommandées.
@@ -24,8 +24,8 @@
 - [x] Créer la boutique publique responsive, le panier et le parcours de commande sans confiance côté navigateur.
 - [x] Intégrer des fonctions IA dans les workflows de contenu et de décision, avec traçabilité d’usage.
 - [x] Préparer les modèles et points d’extension pour l’administration, les plans et les automatisations.
-- [ ] Mettre en place le SEO technique, les pages indexables, le sitemap, robots et les données structurées pertinentes.
-- [ ] Mettre en place les états de chargement, erreurs, succès, sessions expirées et ressources introuvables.
+- [x] Mettre en place le SEO technique, les pages indexables, le sitemap, robots et les données structurées pertinentes.
+- [x] Mettre en place les états de chargement, erreurs, succès, sessions expirées et ressources introuvables.
 - [x] Écrire et exécuter les tests unitaires, API, calculs, permissions, authentification et isolation multi-tenant.
 - [x] Vérifier le typage, le build, le comportement responsive, les interactions clés et les performances de base.
 - [x] Rédiger le rapport final de fonctionnalités, tests, limites éventuelles et préparation au déploiement.
@@ -49,9 +49,13 @@
 - [x] Compléter les règles de promotion avec période, minimum de commande et produits ciblés.
 - [x] Afficher l’historique de statuts dans le parcours commandes.
 - [x] Créer une fiche client avec coordonnées et commandes associées.
-- [ ] Ajouter des états d’erreur cohérents sur les pages tRPC critiques.
+- [x] Ajouter des états d’erreur cohérents sur les pages tRPC critiques.
 - [x] Ajouter des tests d’autorisation pour les rôles propriétaire, gestionnaire, collaborateur et administrateur, ainsi que les refus UNAUTHORIZED/FORBIDDEN.
 - [x] Ajouter des tests d’authentification et de protection de procédure au-delà de la déconnexion.
 - [x] Vérifier et documenter les interactions de parcours clés en navigateur ou via des tests d’intégration représentatifs.
 - [x] Documenter une mesure de performance de base et son budget de bundle.
 - [x] Vérifier la présence et le contenu du rapport final de validation.
+- [x] Rendre la landing et les boutiques publiques côté serveur avec métadonnées par page, canonical et balises sociales.
+- [x] Finaliser les informations de tarification publique et les pages de confidentialité et mentions légales.
+- [x] Ajouter un état d’erreur et une reprise explicite aux automatisations et à leurs mutations critiques.
+- [x] Ajouter un état d’erreur et une reprise explicite à l’administration.
