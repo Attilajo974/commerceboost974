@@ -99,3 +99,5 @@
 - [x] Vérifier explicitement la protection CSRF des mutations de facturation et l’exclusion sûre du webhook Stripe.
 - [x] Prouver les flux CSRF valides de portail de facturation et de webhook Stripe signé sans configuration de production persistée.
 - [x] Ajouter, valider et synchroniser une CI GitHub de typage, tests, build et audit de production sur master.
+- [ ] Configurer et vérifier la protection GitHub de la branche master avec la CI qualité et sécurité obligatoire.
+- [x] Mesurer, configurer et synchroniser le rapport de couverture Vitest dans la CI GitHub.
