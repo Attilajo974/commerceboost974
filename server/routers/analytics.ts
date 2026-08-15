@@ -3,11 +3,13 @@ import { z } from "zod";
 import { customers, orderItems, orders, products, promotions } from "../../drizzle/schema";
 import { requireBusinessAccess } from "../domain/tenant";
 import { protectedProcedure, router } from "../_core/trpc";
+import { requirePlanFeature } from "../billing/plans";
 
 const periodMap = { today: 1, "7d": 7, "30d": 30, "90d": 90 } as const;
 
 export const analyticsRouter = router({
   overview: protectedProcedure.input(z.object({ businessId: z.number().int().positive(), period: z.enum(["today", "7d", "30d", "90d"]).default("30d") })).query(async ({ ctx, input }) => {
+    await requirePlanFeature(input.businessId, "analytics");
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId);
     const days = periodMap[input.period];
     const from = new Date();

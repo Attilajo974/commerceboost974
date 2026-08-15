@@ -59,3 +59,35 @@
 - [x] Finaliser les informations de tarification publique et les pages de confidentialité et mentions légales.
 - [x] Ajouter un état d’erreur et une reprise explicite aux automatisations et à leurs mutations critiques.
 - [x] Ajouter un état d’erreur et une reprise explicite à l’administration.
+- [x] Analyser intégralement le nouveau cahier des charges et cartographier chaque exigence avec le projet actuel.
+- [ ] Implémenter les écarts fonctionnels, techniques, UX, sécurité, IA, automatisation, conformité et production identifiés dans le nouveau cahier des charges.
+- [ ] Vérifier et documenter la conformité finale du projet vis-à-vis du nouveau cahier des charges.
+- [x] Auditer les modules existants par rapport aux exigences Stripe, plans, conformité, sécurité, SEO, observabilité et production.
+- [x] Ajouter la préparation Stripe sécurisée, les variables d’environnement, les webhooks vérifiés et les flux d’abonnement non activés sans identifiants.
+- [x] Déclarer et documenter les variables `STRIPE_PRICE_STARTER`, `STRIPE_PRICE_BUSINESS` et `STRIPE_PRICE_PRO` sans leur attribuer de valeur tant que les produits Stripe réels ne sont pas créés.
+- [x] Contrôler les plans Starter, Business et Pro ainsi que les limites côté serveur et dans la base de données.
+- [x] Centraliser la configuration du domaine et documenter les URLs publiques, callbacks, sitemap, canonical et Open Graph.
+- [x] Remplacer toute information commerciale ou légale non fournie par des emplacements explicitement signalés à renseigner.
+- [x] Ajouter les fondations RGPD réelles pour export, suppression, conservation et minimisation des données personnelles.
+- [x] Ajouter des tests d’isolation explicites Entreprise A/Entreprise B sur produits, commandes et clients.
+- [x] Ajouter des tests d’intégration représentatifs des parcours professionnel, client, commerçant, IA, automatisation et administration.
+- [x] Renforcer l’observabilité sans journaliser de secrets ou de données personnelles inutiles.
+- [ ] Créer `.env.example` et une documentation complète d’installation, environnement, Stripe, domaine, sécurité, déploiement et tests.
+- [ ] Vérifier les parcours critiques aux dimensions mobiles et documenter les résultats.
+- [x] Étendre les droits de plan côté serveur aux analytics et ajouter des tests dédiés des droits et limites.
+- [ ] Étendre les droits de plan côté serveur aux commandes et ajouter des tests de refus/permission métier par plan.
+- [x] Couvrir par plan toutes les lectures et mutations de commandes et clients exposées par l’API.
+- [x] Tester explicitement les refus Starter et les permissions Business/Pro sur les procédures de commandes sans simulation positive du garde-fou.
+- [x] Ajouter des tests de procédure commandes Business et Pro utilisant le contrôle de plan réel et une couche de données simulée uniquement.
+- [x] Prouver le refus Starter de `order.list` avec le garde-fou réel et une base simulée.
+- [x] Couvrir `order.get` et `order.updateStatus` par Business et Pro avec le garde-fou réel.
+- [x] Documenter la matrice définitive capacités-plan-procédures côté serveur.
+- [x] Remplacer l’adresse de contact non configurée du footer par une information explicitement à renseigner avant publication.
+- [ ] Appliquer une politique de conservation sûre aux données techniques expirées par traitement planifié authentifié et idempotent.
+- [x] Exposer et tester la suppression du compte quand aucun espace professionnel ne reste associé.
+- [x] Rendre les erreurs d’exploitation structurées et minimisées pour éviter les journaux contenant des données inutiles.
+- [x] Uniformiser les derniers journaux serveur via le helper sûr et vérifier l’absence d’objets d’erreur bruts dans SSR, OAuth, stockage, authentification et base de données.
+- [x] Prouver l’isolation A/B avec le vrai garde-fou d’appartenance et des lectures tenantées de produits, clients et commandes.
+- [x] Rendre les six parcours de recette explicitement traçables avec succès et refus métier dans la suite d’intégration.
+- [x] Couvrir les refus métier explicites pour les parcours client public, IA et automatisation.
+- [x] Redacter les journaux du collecteur de débogage afin qu’ils ne conservent ni contenus de réponse, ni en-têtes sensibles, ni paramètres d’URL d’API.

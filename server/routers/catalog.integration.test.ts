@@ -14,6 +14,7 @@ vi.mock("../domain/tenant", () => ({
   recordAudit: mocks.recordAudit,
 }));
 vi.mock("../domain/rateLimit", () => ({ enforceActionRateLimit: mocks.enforceActionRateLimit }));
+vi.mock("../billing/plans", async importOriginal => ({ ...(await importOriginal<typeof import("../billing/plans")>()), enforcePlanLimit: vi.fn(async () => undefined) }));
 
 import { appRouter } from "../routers";
 

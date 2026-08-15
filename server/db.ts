@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { accountDeletionMarkers, InsertUser, users } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { logOperationalError } from "./domain/observability";
 
 let database: ReturnType<typeof drizzle> | null = null;
 
@@ -10,7 +11,7 @@ export async function getDb() {
     try {
       database = drizzle(process.env.DATABASE_URL);
     } catch (error) {
-      console.error("[database] Connexion impossible", error);
+      logOperationalError("database.connection_failed", error);
       database = null;
     }
   }
@@ -44,4 +45,11 @@ export async function getUserByOpenId(openId: string) {
   if (!db) return undefined;
   const rows = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
   return rows[0];
+}
+
+export async function isAccountDeleted(openId: string) {
+  const db = await getDb();
+  if (!db) return false;
+  const rows = await db.select({ id: accountDeletionMarkers.id }).from(accountDeletionMarkers).where(eq(accountDeletionMarkers.openId, openId)).limit(1);
+  return Boolean(rows[0]);
 }

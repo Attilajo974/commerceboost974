@@ -49,6 +49,21 @@ function trimLogFile(logPath: string, maxSize: number) {
   }
 }
 
+function safePath(raw: unknown) {
+  if (typeof raw !== "string") return "/";
+  try { return new URL(raw, "http://local").pathname; } catch { return "/"; }
+}
+
+function redactDebugEntry(source: LogSource, entry: unknown) {
+  const value = entry && typeof entry === "object" ? entry as Record<string, unknown> : {};
+  if (source === "networkRequests") {
+    const response = value.response && typeof value.response === "object" ? value.response as Record<string, unknown> : {};
+    return { timestamp: value.timestamp ?? null, type: value.type ?? "fetch", method: value.method ?? null, path: safePath(value.url), status: response.status ?? null, duration: value.duration ?? null, error: value.error ? "request_failed" : null };
+  }
+  if (source === "browserConsole") return { timestamp: value.timestamp ?? null, level: value.level ?? value.type ?? "log", event: "browser_console" };
+  return { timestamp: value.timestamp ?? null, type: value.type ?? "interaction", target: value.target && typeof value.target === "object" ? "element" : null };
+}
+
 function writeToLogFile(source: LogSource, entries: unknown[]) {
   if (entries.length === 0) return;
 
@@ -58,7 +73,7 @@ function writeToLogFile(source: LogSource, entries: unknown[]) {
   // Format entries with timestamps
   const lines = entries.map((entry) => {
     const ts = new Date().toISOString();
-    return `[${ts}] ${JSON.stringify(entry)}`;
+    return `[${ts}] ${JSON.stringify(redactDebugEntry(source, entry))}`;
   });
 
   // Append to log file
@@ -167,6 +182,16 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("/react/") || id.includes("/react-dom/")) return "react-vendor";
+          if (id.includes("@trpc") || id.includes("@tanstack/react-query") || id.includes("superjson")) return "data-vendor";
+          if (id.includes("@radix-ui") || id.includes("lucide-react")) return "ui-vendor";
+        },
+      },
+    },
   },
   server: {
     host: true,

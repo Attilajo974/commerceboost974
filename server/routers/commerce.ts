@@ -8,6 +8,7 @@ import { canTransitionOrderStatus } from "../domain/orderState";
 import { recordAudit, requireBusinessAccess } from "../domain/tenant";
 import { enforceActionRateLimit } from "../domain/rateLimit";
 import { protectedProcedure, publicProcedure, router } from "../_core/trpc";
+import { requirePlanFeature } from "../billing/plans";
 
 const businessScope = z.object({ businessId: z.number().int().positive() });
 const cartItemSchema = z.object({ productId: z.number().int().positive(), quantity: z.number().int().min(1).max(99) });
@@ -28,6 +29,7 @@ async function createOrderFromPublicCheckout(input: {
   const db = await getRequiredDb();
   const business = await db.select().from(businesses).where(and(eq(businesses.slug, input.slug), eq(businesses.isPublished, true), eq(businesses.status, "active"))).limit(1);
   if (!business[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Cette boutique est indisponible." });
+  await requirePlanFeature(business[0].id, "orders");
   const pricing = await priceCart(business[0].id, input.cart);
 
   let orderId = 0;
@@ -89,12 +91,14 @@ export const customerRouter = router({
   list: protectedProcedure
     .input(businessScope.extend({ query: z.string().max(120).optional(), page: z.number().int().min(1).default(1) }))
     .query(async ({ ctx, input }) => {
+      await requirePlanFeature(input.businessId, "orders");
       const { db } = await requireBusinessAccess(ctx.user.id, input.businessId);
       const filters = [eq(customers.businessId, input.businessId)];
       if (input.query) filters.push(or(like(customers.firstName, `%${input.query}%`), like(customers.lastName, `%${input.query}%`), like(customers.email, `%${input.query}%`))!);
       return db.select().from(customers).where(and(...filters)).orderBy(desc(customers.updatedAt)).limit(30).offset((input.page - 1) * 30);
     }),
   get: protectedProcedure.input(businessScope.extend({ id: z.number().int().positive() })).query(async ({ ctx, input }) => {
+    await requirePlanFeature(input.businessId, "orders");
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId);
     const customer = await db.select().from(customers).where(and(eq(customers.id, input.id), eq(customers.businessId, input.businessId))).limit(1);
     if (!customer[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Client introuvable." });
@@ -105,6 +109,7 @@ export const customerRouter = router({
     .input(businessScope.extend({ id: z.number().int().positive(), firstName: z.string().min(1).max(100).optional(), lastName: z.string().min(1).max(100).optional(), phone: z.string().max(32).nullable().optional(), notes: z.string().max(3000).nullable().optional() }))
     .mutation(async ({ ctx, input }) => {
       await enforceActionRateLimit("customer.mutation", `user:${ctx.user.id}:business:${input.businessId}`);
+      await requirePlanFeature(input.businessId, "orders");
       const { db } = await requireBusinessAccess(ctx.user.id, input.businessId, ["owner", "manager"]);
       const { businessId, id, ...values } = input;
       await db.update(customers).set(values).where(and(eq(customers.id, id), eq(customers.businessId, businessId)));
@@ -117,6 +122,7 @@ export const orderRouter = router({
   list: protectedProcedure
     .input(businessScope.extend({ status: orderStatus.optional(), page: z.number().int().min(1).default(1) }))
     .query(async ({ ctx, input }) => {
+      await requirePlanFeature(input.businessId, "orders");
       const { db } = await requireBusinessAccess(ctx.user.id, input.businessId);
       const filters = [eq(orders.businessId, input.businessId)];
       if (input.status) filters.push(eq(orders.status, input.status));
@@ -130,6 +136,7 @@ export const orderRouter = router({
         .offset((input.page - 1) * 30);
     }),
   get: protectedProcedure.input(businessScope.extend({ id: z.number().int().positive() })).query(async ({ ctx, input }) => {
+    await requirePlanFeature(input.businessId, "orders");
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId);
     const order = await db.select({ order: orders, customer: customers }).from(orders).innerJoin(customers, eq(orders.customerId, customers.id)).where(and(eq(orders.id, input.id), eq(orders.businessId, input.businessId))).limit(1);
     if (!order[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Commande introuvable." });
@@ -139,6 +146,7 @@ export const orderRouter = router({
   }),
   updateStatus: protectedProcedure.input(businessScope.extend({ id: z.number().int().positive(), status: orderStatus, note: z.string().max(600).nullable().optional() })).mutation(async ({ ctx, input }) => {
     await enforceActionRateLimit("order.status", `user:${ctx.user.id}:business:${input.businessId}`);
+    await requirePlanFeature(input.businessId, "orders");
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId, ["owner", "manager", "staff"]);
     const existing = await db.select().from(orders).where(and(eq(orders.id, input.id), eq(orders.businessId, input.businessId))).limit(1);
     if (!existing[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Commande introuvable." });
@@ -159,6 +167,7 @@ export const checkoutRouter = router({
     const db = await getRequiredDb();
     const business = await db.select().from(businesses).where(and(eq(businesses.slug, input.slug), eq(businesses.isPublished, true), eq(businesses.status, "active"))).limit(1);
     if (!business[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Boutique introuvable." });
+    await requirePlanFeature(business[0].id, "orders");
     const pricing = await priceCart(business[0].id, input.cart);
     return { subtotalCents: pricing.subtotalCents, discountCents: pricing.discountCents, totalCents: pricing.totalCents, lines: pricing.lines.map(line => ({ productId: line.product.id, name: line.product.name, quantity: line.quantity, unitPriceCents: line.unitPriceCents, lineTotalCents: line.lineTotalCents })) };
   }),

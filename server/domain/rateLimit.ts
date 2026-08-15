@@ -17,6 +17,10 @@ export const ACTION_RATE_POLICIES = {
   "ai.generation": { limit: 20, windowMs: 60 * 60 * 1000 },
   "automation.mutation": { limit: 20, windowMs: 60 * 60 * 1000 },
   "checkout.create": { limit: 8, windowMs: 10 * 60 * 1000 },
+  "billing.checkout": { limit: 8, windowMs: 60 * 60 * 1000 },
+  "billing.portal": { limit: 12, windowMs: 60 * 60 * 1000 },
+  "privacy.export": { limit: 8, windowMs: 60 * 60 * 1000 },
+  "privacy.delete": { limit: 4, windowMs: 24 * 60 * 60 * 1000 },
 } as const;
 
 type ActionName = keyof typeof ACTION_RATE_POLICIES;
@@ -35,6 +39,9 @@ export const SENSITIVE_MUTATION_COVERAGE = [
   { procedure: "ai.improveProduct / ai.weeklyInsight", policy: "ai.generation", audit: "ai.generated" },
   { procedure: "automation.createWeeklySummary / toggle / remove", policy: "automation.mutation", audit: "automation.*" },
   { procedure: "checkout.create", policy: "checkout.create", audit: "order.public_created" },
+  { procedure: "billing.createCheckout", policy: "billing.checkout", audit: "billing.checkout_created" },
+  { procedure: "billing.portal", policy: "billing.portal", audit: "billing.portal_created" },
+  { procedure: "privacy.deleteWorkspace / deleteMyAccount", policy: "privacy.delete", audit: "privacy.*" },
 ] as const;
 
 export function hashRateLimitSubject(subject: string) {

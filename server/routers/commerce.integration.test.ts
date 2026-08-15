@@ -16,6 +16,7 @@ vi.mock("../domain/tenant", () => ({
 }));
 vi.mock("../domain/rateLimit", () => ({ enforceActionRateLimit: mocks.enforceActionRateLimit }));
 vi.mock("../domain/commerce", () => ({ priceCart: mocks.priceCart }));
+vi.mock("../billing/plans", async importOriginal => ({ ...(await importOriginal<typeof import("../billing/plans")>()), requirePlanFeature: vi.fn(async () => ({ code: "business" })) }));
 
 import { appRouter } from "../routers";
 

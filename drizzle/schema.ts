@@ -27,6 +27,13 @@ export const users = mysqlTable("users", {
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
 });
 
+/** Minimal marker preventing OAuth from silently recreating an account erased at the user's request. */
+export const accountDeletionMarkers = mysqlTable("account_deletion_markers", {
+  id: int("id").autoincrement().primaryKey(),
+  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  deletedAt: timestamp("deletedAt").defaultNow().notNull(),
+});
+
 export const businesses = mysqlTable(
   "businesses",
   {
@@ -371,10 +378,29 @@ export const subscriptions = mysqlTable(
     planId: int("planId").references(() => subscriptionPlans.id, { onDelete: "set null" }),
     status: mysqlEnum("status", ["trial", "active", "past_due", "cancelled"]).default("trial").notNull(),
     currentPeriodEndsAt: timestamp("currentPeriodEndsAt"),
+    trialEndsAt: timestamp("trialEndsAt"),
+    cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").default(false).notNull(),
+    stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+    stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }).unique(),
+    stripePriceId: varchar("stripePriceId", { length: 255 }),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
   table => [index("subscriptions_status_idx").on(table.status)]
+);
+
+/** Idempotency record only: Stripe payloads and payment instruments are never persisted. */
+export const stripeWebhookEvents = mysqlTable(
+  "stripe_webhook_events",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    eventId: varchar("eventId", { length: 255 }).notNull().unique(),
+    eventType: varchar("eventType", { length: 120 }).notNull(),
+    businessId: int("businessId").references(() => businesses.id, { onDelete: "set null" }),
+    receivedAt: timestamp("receivedAt").defaultNow().notNull(),
+    processedAt: timestamp("processedAt"),
+  },
+  table => [index("stripe_webhook_events_business_received_idx").on(table.businessId, table.receivedAt)]
 );
 
 export const automationRules = mysqlTable(

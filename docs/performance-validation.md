@@ -1,13 +1,16 @@
 # Mesure de performance de base
 
-La compilation de production a été exécutée après le découpage asynchrone des pages. La landing, l’onboarding, le catalogue, le tableau de bord, la boutique et les modules secondaires sont désormais chargés en modules séparés.
+La compilation de production a été exécutée après le découpage asynchrone des pages et le découpage manuel des dépendances. La landing, l’onboarding, le catalogue, le tableau de bord, la boutique et les modules secondaires sont chargés en modules séparés.
 
 | Artefact de production | Taille brute | Taille gzip | Lecture |
 | --- | ---: | ---: | --- |
-| Bundle commun | 688,9 kio | 204,3 kio | À optimiser avant une campagne à fort trafic. |
-| Landing | 33,0 kio | 4,2 kio | Chargée à la demande. |
-| Catalogue | 36,7 kio | 5,0 kio | Chargé après accès au portail. |
-| Tableau de bord | 27,3 kio | 3,6 kio | Chargé après accès au portail. |
-| Boutique publique | 22,9 kio | 3,3 kio | Chargée à la demande. |
+| Point d’entrée applicatif | 133,1 kio | 37,0 kio | Réduit après séparation des dépendances. |
+| Dépendances React | 217,3 kio | 69,4 kio | Cacheable séparément. |
+| Données tRPC / React Query | 99,2 kio | 27,4 kio | Cacheable séparément. |
+| Composants et icônes UI | 91,5 kio | 27,4 kio | Cacheable séparément. |
+| Catalogue | 17,3 kio | 3,4 kio | Chargé après accès au portail. |
+| Tableau de bord | 12,6 kio | 2,5 kio | Chargé après accès au portail. |
+| Onboarding | 12,3 kio | 2,9 kio | Chargé après accès au portail. |
+| Rendu SSR | 72,6 kio | — | Bundle serveur dédié. |
 
-Le contrôle de build est réussi. Le découpage réduit le coût des pages métier pour un visiteur de la landing, mais le bundle partagé reste au-dessus du budget indicatif de 200 kio gzip. Une analyse de dépendances et un découpage manuel des bibliothèques d’interface constituent la prochaine optimisation recommandée.
+Le contrôle de build est réussi. Le précédent chunk unique de 512,6 kio (153,5 kio gzip) est désormais réparti entre un point d’entrée léger et trois dépendances cacheables, sans avertissement de chunk unique supérieur à 500 kio. Les mesures de terrain (LCP, INP et CLS) restent à collecter sur le domaine final avec un trafic représentatif.

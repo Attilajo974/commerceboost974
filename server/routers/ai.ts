@@ -6,6 +6,8 @@ import { invokeLLM, listLLMModels } from "../_core/llm";
 import { enforceActionRateLimit } from "../domain/rateLimit";
 import { recordAudit, requireBusinessAccess } from "../domain/tenant";
 import { protectedProcedure, router } from "../_core/trpc";
+import { enforceAiMonthlyLimit } from "../billing/plans";
+import { logOperationalError } from "../domain/observability";
 
 async function preferredModel() {
   const { data } = await listLLMModels();
@@ -26,7 +28,7 @@ async function generateAndLog(input: { businessId: number; userId: number; featu
     return output;
   } catch (error) {
     await db.insert(aiGenerations).values({ businessId: input.businessId, userId: input.userId, feature: input.feature, model: model ?? null, inputSummary: input.inputSummary.slice(0, 1000), output: null, status: "failed" });
-    console.error("[AI] Génération impossible", error);
+    logOperationalError("ai.generation_failed", error, { businessId: input.businessId, feature: input.feature });
     throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "L’assistant n’est pas disponible pour le moment." });
   }
 }
@@ -34,6 +36,7 @@ async function generateAndLog(input: { businessId: number; userId: number; featu
 export const aiRouter = router({
   improveProduct: protectedProcedure.input(z.object({ businessId: z.number().int().positive(), productId: z.number().int().positive(), intent: z.enum(["description", "title", "short_pitch"]).default("description") })).mutation(async ({ ctx, input }) => {
     await enforceActionRateLimit("ai.generation", `user:${ctx.user.id}:business:${input.businessId}`);
+    await enforceAiMonthlyLimit(input.businessId);
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId, ["owner", "manager"]);
     const [product] = await db.select().from(products).where(and(eq(products.id, input.productId), eq(products.businessId, input.businessId))).limit(1);
     if (!product) throw new TRPCError({ code: "NOT_FOUND", message: "Produit introuvable." });
@@ -45,6 +48,7 @@ export const aiRouter = router({
 
   weeklyInsight: protectedProcedure.input(z.object({ businessId: z.number().int().positive() })).mutation(async ({ ctx, input }) => {
     await enforceActionRateLimit("ai.generation", `user:${ctx.user.id}:business:${input.businessId}`);
+    await enforceAiMonthlyLimit(input.businessId);
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId);
     const from = new Date(); from.setDate(from.getDate() - 7);
     const recentOrders = await db.select().from(orders).where(and(eq(orders.businessId, input.businessId), gte(orders.createdAt, from))).orderBy(desc(orders.createdAt));

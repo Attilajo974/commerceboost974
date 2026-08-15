@@ -7,6 +7,7 @@ import { createHeartbeatJob, deleteHeartbeatJob, updateHeartbeatJob } from "../_
 import { enforceActionRateLimit } from "../domain/rateLimit";
 import { recordAudit, requireBusinessAccess } from "../domain/tenant";
 import { protectedProcedure, router } from "../_core/trpc";
+import { enforcePlanLimit, requirePlanFeature } from "../billing/plans";
 
 const scope = z.object({ businessId: z.number().int().positive() });
 const weeklyCron = "0 0 5 * * 1";
@@ -20,6 +21,8 @@ export const automationRouter = router({
   }),
   createWeeklySummary: protectedProcedure.input(scope.extend({ name: z.string().min(3).max(120).default("Point hebdomadaire") })).mutation(async ({ ctx, input }) => {
     await enforceActionRateLimit("automation.mutation", `user:${ctx.user.id}:business:${input.businessId}`);
+    await requirePlanFeature(input.businessId, "automations");
+    await enforcePlanLimit(input.businessId, "automations");
     const { db } = await requireBusinessAccess(ctx.user.id, input.businessId, ["owner"]);
     const job = await createHeartbeatJob({ name: `commerceboost-weekly-${input.businessId}-${Date.now()}`, cron: weeklyCron, path: "/api/scheduled/weekly-summary", payload: {}, description: `Résumé hebdomadaire CommerceBoost974 pour l’entreprise ${input.businessId}` }, sessionToken(ctx.req.headers.cookie));
     const [created] = await db.insert(automationRules).values({ businessId: input.businessId, name: input.name.trim(), triggerType: "scheduled", triggerConfig: { cron: weeklyCron, timezone: "UTC", cadence: "hebdomadaire" }, actionType: "weekly_summary_notification", actionConfig: { target: "owner" }, scheduleCronTaskUid: job.taskUid, isEnabled: true });

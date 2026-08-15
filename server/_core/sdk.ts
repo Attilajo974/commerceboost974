@@ -7,6 +7,7 @@ import { SignJWT, jwtVerify } from "jose";
 import type { User } from "../../drizzle/schema";
 import * as db from "../db";
 import { ENV } from "./env";
+import { logOperationalError } from "../domain/observability";
 import type {
   ExchangeTokenRequest,
   ExchangeTokenResponse,
@@ -32,9 +33,7 @@ class OAuthService {
   constructor(private client: ReturnType<typeof axios.create>) {
     console.log("[OAuth] Initialized with baseURL:", ENV.oAuthServerUrl);
     if (!ENV.oAuthServerUrl) {
-      console.error(
-        "[OAuth] ERROR: OAUTH_SERVER_URL is not configured! Set OAUTH_SERVER_URL environment variable."
-      );
+      logOperationalError("oauth.server_url_missing", new Error("OAuth server URL missing"));
     }
   }
 
@@ -226,7 +225,7 @@ class SDKServer {
         name,
       };
     } catch (error) {
-      console.warn("[Auth] Session verification failed", String(error));
+      logOperationalError("auth.session_verification_failed", error);
       return null;
     }
   }
@@ -287,6 +286,7 @@ class SDKServer {
 
     const sessionUserId = session.openId;
     const signedInAt = new Date();
+    if (await db.isAccountDeleted(sessionUserId)) throw ForbiddenError("Account deleted");
     let user = await db.getUserByOpenId(sessionUserId);
 
     // If user not in DB, sync from OAuth server automatically
@@ -302,7 +302,7 @@ class SDKServer {
         });
         user = await db.getUserByOpenId(userInfo.openId);
       } catch (error) {
-        console.error("[Auth] Failed to sync user from OAuth:", error);
+        logOperationalError("auth.user_sync_failed", error);
         throw ForbiddenError("Failed to sync user info");
       }
     }

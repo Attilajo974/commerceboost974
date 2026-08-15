@@ -29,6 +29,20 @@
       "when": 1786763572733,
       "tag": "0003_absurd_gwen_stacy",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1786766957708,
+      "tag": "0004_faithful_impossible_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1786768369634,
+      "tag": "0005_left_longshot",
+      "breakpoints": true
     }
   ]
 }

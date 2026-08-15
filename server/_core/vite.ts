@@ -8,11 +8,13 @@ import { createServer as createViteServer } from "vite";
 import type { HeadMeta } from "../../client/src/ssr/prefetch";
 import viteConfig from "../../vite.config";
 import { buildSsrPrefetch } from "./ssrCaller";
+import { ENV } from "./env";
+import { logOperationalError } from "../domain/observability";
 
 const SITE = "CommerceBoost974";
 const DEFAULT_DESCRIPTION = "Vitrine, catalogue, commandes et pilotage pour les artisans, commerçants et TPE de La Réunion.";
 const escape = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-const origin = () => (process.env.CANONICAL_ORIGIN || "").replace(/\/$/, "");
+const origin = () => ENV.canonicalOrigin;
 
 function headTags(head: HeadMeta) {
   const title = escape(head.title || SITE); const description = escape(head.description || DEFAULT_DESCRIPTION); const canonical = head.canonicalPath && origin() ? `${origin()}${head.canonicalPath}` : "";
@@ -54,7 +56,7 @@ export function serveStatic(app: Express) {
       const result = await module.render(req.originalUrl, await buildSsrPrefetch(req, res));
       res.status(result.head.notFound ? 404 : 200).set("Cache-Control", "no-cache").type("html").end(compose(template, result.html, result.head, result.state));
     } catch (error) {
-      console.error("[SSR] render failed", error);
+      logOperationalError("ssr.render_failed", error, { path: req.path });
       const fallback: HeadMeta = { title: SITE, description: DEFAULT_DESCRIPTION };
       res.status(200).set("Cache-Control", "no-cache").type("html").end(compose(template, "", fallback, {}));
     }

@@ -1,5 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { ENV } from "./env";
+import { logOperationalError } from "../domain/observability";
 
 export type NotificationPayload = {
   title: string;
@@ -97,18 +98,13 @@ export async function notifyOwner(
     });
 
     if (!response.ok) {
-      const detail = await response.text().catch(() => "");
-      console.warn(
-        `[Notification] Failed to notify owner (${response.status} ${response.statusText})${
-          detail ? `: ${detail}` : ""
-        }`
-      );
+      logOperationalError("notification.owner_rejected", new Error("Notification upstream rejected"), { status: response.status });
       return false;
     }
 
     return true;
   } catch (error) {
-    console.warn("[Notification] Error calling notification service:", error);
+    logOperationalError("notification.owner_delivery_failed", error);
     return false;
   }
 }

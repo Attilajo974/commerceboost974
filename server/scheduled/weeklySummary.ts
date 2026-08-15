@@ -3,6 +3,7 @@ import { and, eq, gte, sql } from "drizzle-orm";
 import { automationRules, memberships, notifications, orders } from "../../drizzle/schema";
 import { getRequiredDb } from "../domain/tenant";
 import { sdk } from "../_core/sdk";
+import { logOperationalError } from "../domain/observability";
 
 export async function weeklySummaryHandler(req: Request, res: Response) {
   try {
@@ -22,7 +23,7 @@ export async function weeklySummaryHandler(req: Request, res: Response) {
     });
     return res.json({ ok: true, orders: summary?.total ?? 0 });
   } catch (error) {
-    console.error("[Scheduled weekly-summary]", error);
-    return res.status(500).json({ error: error instanceof Error ? error.message : String(error), context: { url: req.originalUrl }, timestamp: new Date().toISOString() });
+    logOperationalError("scheduled.weekly_summary.failed", error, { path: req.path });
+    return res.status(500).json({ error: "Traitement planifié interrompu.", timestamp: new Date().toISOString() });
   }
 }

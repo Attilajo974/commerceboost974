@@ -7,4 +7,9 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  canonicalOrigin: (process.env.CANONICAL_ORIGIN ?? "").replace(/\/$/, ""),
+  publisherName: process.env.PUBLISHER_NAME ?? "",
+  publisherAddress: process.env.PUBLISHER_ADDRESS ?? "",
+  supportEmail: process.env.SUPPORT_EMAIL ?? "",
+  dataRetentionDays: Number.parseInt(process.env.DATA_RETENTION_DAYS ?? "365", 10),
 };

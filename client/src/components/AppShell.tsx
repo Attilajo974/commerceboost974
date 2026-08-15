@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { trpc } from "@/lib/trpc";
-import { Box, CalendarClock, ChevronDown, ClipboardList, LayoutDashboard, LogOut, Menu, Moon, PanelLeftClose, PanelLeftOpen, Percent, Settings, Store, Sun, Users } from "lucide-react";
+import { Box, CalendarClock, ChevronDown, ClipboardList, CreditCard, LayoutDashboard, LogOut, Menu, Moon, PanelLeftClose, PanelLeftOpen, Percent, Settings, Store, Sun, Users } from "lucide-react";
 import { ReactNode, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
@@ -17,6 +17,7 @@ const navigation = [
   { label: "Clients", path: "/app/clients", icon: Users },
   { label: "Promotions", path: "/app/promotions", icon: Percent },
   { label: "Automatisations", path: "/app/automatisations", icon: CalendarClock },
+  { label: "Abonnement", path: "/app/abonnement", icon: CreditCard },
   { label: "Paramètres", path: "/app/parametres", icon: Settings },
 ];
 

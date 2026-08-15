@@ -6,6 +6,7 @@ import { slugify } from "../domain/slug";
 import { recordAudit, requireBusinessAccess } from "../domain/tenant";
 import { enforceActionRateLimit } from "../domain/rateLimit";
 import { protectedProcedure, router } from "../_core/trpc";
+import { enforcePlanLimit } from "../billing/plans";
 
 const scope = z.object({ businessId: z.number().int().positive() });
 const productStatus = z.enum(["draft", "active", "archived"]);
@@ -91,6 +92,7 @@ export const productRouter = router({
     .input(scope.extend({ name: z.string().min(2).max(180), description: z.string().max(6000).nullable().optional(), shortDescription: z.string().max(320).nullable().optional(), sku: z.string().max(80).nullable().optional(), priceCents: z.number().int().min(0), compareAtPriceCents: z.number().int().min(0).nullable().optional(), categoryId: z.number().int().positive().nullable().optional(), imageUrl: z.string().url().nullable().optional(), status: productStatus.optional(), isAvailable: z.boolean().optional(), trackInventory: z.boolean().optional(), stockQuantity: z.number().int().min(0).nullable().optional() }))
     .mutation(async ({ ctx, input }) => {
       await enforceActionRateLimit("catalog.mutation", `user:${ctx.user.id}:business:${input.businessId}`);
+      await enforcePlanLimit(input.businessId, "products");
       const { db } = await requireBusinessAccess(ctx.user.id, input.businessId, ["owner", "manager"]);
       await validateCategory(input.businessId, input.categoryId, ctx.user.id);
       const slug = `${slugify(input.name)}-${Date.now().toString(36)}`;

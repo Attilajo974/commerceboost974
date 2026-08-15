@@ -12,6 +12,10 @@ import { weeklySummaryHandler } from "../scheduled/weeklySummary";
 import { getRequiredDb } from "../domain/tenant";
 import { businesses } from "../../drizzle/schema";
 import { and, eq } from "drizzle-orm";
+import { stripeWebhookHandler } from "../billing/webhook";
+import { ENV } from "./env";
+import { dataRetentionHandler } from "../scheduled/dataRetention";
+import { logOperationalError } from "../domain/observability";
 
 const apiRequests = new Map<string, { count: number; resetAt: number }>();
 
@@ -20,8 +24,11 @@ function securityHeaders(req: express.Request, res: express.Response, next: expr
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
   if (process.env.NODE_ENV === "production") {
     res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+    res.setHeader("Content-Security-Policy", "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; form-action 'self' https://checkout.stripe.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.manus.computer");
   }
   next();
 }
@@ -73,19 +80,21 @@ async function startServer() {
   const server = createServer(app);
   app.set("trust proxy", 1);
   app.use(securityHeaders);
+  app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhookHandler);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   app.post("/api/scheduled/weekly-summary", weeklySummaryHandler);
+  app.post("/api/scheduled/data-retention", dataRetentionHandler);
   app.get("/robots.txt", (req, res) => {
-    const origin = process.env.CANONICAL_ORIGIN || `${req.protocol}://${req.get("host")}`;
+    const origin = ENV.canonicalOrigin || `${req.protocol}://${req.get("host")}`;
     res.type("text/plain").send(`User-agent: *\nAllow: /\nDisallow: /app\nDisallow: /admin\nSitemap: ${origin}/sitemap.xml\n`);
   });
   app.get("/sitemap.xml", async (req, res, next) => {
     try {
-      const origin = process.env.CANONICAL_ORIGIN || `${req.protocol}://${req.get("host")}`;
+      const origin = ENV.canonicalOrigin || `${req.protocol}://${req.get("host")}`;
       const db = await getRequiredDb();
       const shops = await db.select({ slug: businesses.slug, updatedAt: businesses.updatedAt }).from(businesses).where(and(eq(businesses.isPublished, true), eq(businesses.status, "active")));
       const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
@@ -110,7 +119,7 @@ async function startServer() {
   }
 
   app.use((error: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    console.error("[HTTP] Erreur non gérée", error);
+    logOperationalError("http.unhandled", error, { path: _req.path, method: _req.method });
     if (!res.headersSent) {
       res.status(500).json({ error: "Le service a rencontré une erreur inattendue." });
     }
@@ -128,4 +137,4 @@ async function startServer() {
   });
 }
 
-startServer().catch(console.error);
+startServer().catch(error => logOperationalError("server.start_failed", error));
